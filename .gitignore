@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# App specific
+*.log
+.env
+*.csv
+*.xlsx
+
+# Streamlit secrets (NÃO COMMITAR!)
+.streamlit/secrets.toml
+.streamlit/config.toml
+
+# Temporary files
+fix_settings.py
