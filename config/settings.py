@@ -8,17 +8,34 @@ from typing import Dict, Any
 
 def get_api_key():
     """Obtém a API key dos secrets do Streamlit ou de variável de ambiente."""
+    import logging
+    logger = logging.getLogger(__name__)
+    
     # Tentar obter dos secrets do Streamlit primeiro (produção)
     try:
-        if hasattr(st, 'secrets') and 'OPENROUTER_API_KEY' in st.secrets:
-            return st.secrets['OPENROUTER_API_KEY']
-    except Exception:
-        pass
+        if hasattr(st, 'secrets'):
+            logger.info("✅ Streamlit secrets disponível")
+            if 'OPENROUTER_API_KEY' in st.secrets:
+                api_key = st.secrets['OPENROUTER_API_KEY']
+                logger.info(f"✅ API key encontrada nos secrets (length: {len(api_key)})")
+                return api_key
+            else:
+                logger.warning("❌ OPENROUTER_API_KEY não encontrada nos secrets")
+                # Listar as chaves disponíveis
+                available_keys = list(st.secrets.keys()) if hasattr(st.secrets, 'keys') else []
+                logger.warning(f"Chaves disponíveis nos secrets: {available_keys}")
+        else:
+            logger.warning("❌ st.secrets não está disponível")
+    except Exception as e:
+        logger.error(f"❌ Erro ao acessar secrets: {e}")
     
     # Fallback para variável de ambiente (desenvolvimento local)
     api_key = os.getenv('OPENROUTER_API_KEY', '')
+    if api_key:
+        logger.info("✅ API key encontrada em variável de ambiente")
+    else:
+        logger.error("❌ API key não encontrada em nenhum lugar!")
     
-    # Se não encontrou em nenhum lugar, retornar vazio (será tratado pelo offline agent)
     return api_key
 
 def get_llm_config() -> Dict[str, Any]:

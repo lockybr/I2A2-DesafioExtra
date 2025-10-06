@@ -33,6 +33,20 @@ def main():
         layout=settings.UI_CONFIG["layout"]
     )
     
+    # DEBUG: Verificar secrets (remover em produção)
+    if hasattr(st, 'secrets'):
+        logger.info("✅ Secrets disponível no Streamlit")
+        available_keys = list(st.secrets.keys()) if hasattr(st.secrets, 'keys') else []
+        logger.info(f"Chaves nos secrets: {available_keys}")
+        if 'OPENROUTER_API_KEY' in st.secrets:
+            api_key_length = len(st.secrets['OPENROUTER_API_KEY'])
+            logger.info(f"✅ OPENROUTER_API_KEY encontrada (length: {api_key_length})")
+        else:
+            logger.error("❌ OPENROUTER_API_KEY NÃO encontrada nos secrets!")
+            logger.error(f"Secrets disponíveis: {available_keys}")
+    else:
+        logger.error("❌ st.secrets NÃO está disponível!")
+    
     # Inicializar estado da sessão
     initialize_session_state()
     
