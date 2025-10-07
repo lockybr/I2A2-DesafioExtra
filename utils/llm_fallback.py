@@ -33,10 +33,19 @@ class LLMFallbackManager:
         Returns:
             ChatOpenAI: Instância configurada do LLM
         """
+        print("🔄 Iniciando get_llm...")  # Print direto para debug
         providers = alternative_settings.get_fallback_configs()
+        print(f"📚 Providers disponíveis: {[p['name'] for p in providers]}")  # Print direto para debug
         
         if force_provider is not None:
             provider = providers[force_provider]
+            
+            # Verificar API key
+            if not provider['config'].get('api_key'):
+                logger.error(f"API key não encontrada para {provider['name']}")
+                if hasattr(st, 'error'):
+                    st.error(f"❌ API key não encontrada para {provider['name']}")
+                raise ValueError(f"API key não configurada para {provider['name']}")
             
             # Armazenar informações do provider forçado
             self.current_provider_name = provider['name']
@@ -47,6 +56,12 @@ class LLMFallbackManager:
             # Mostrar notificação no Streamlit
             if hasattr(st, 'info'):
                 st.info(f"🎯 Usando modelo selecionado: {provider['name']}")
+                
+            # Log da configuração (sem a API key)
+            safe_config = provider['config'].copy()
+            if 'api_key' in safe_config:
+                safe_config['api_key'] = f"length: {len(safe_config['api_key'])}"
+            logger.info(f"Configuração do provider: {safe_config}")
             
             return self._create_llm(provider)
         

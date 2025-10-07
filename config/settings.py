@@ -11,18 +11,26 @@ def get_api_key():
     import logging
     logger = logging.getLogger(__name__)
     
+    print("🔍 Verificando API key...")  # Print direto para debug
+    
     # Tentar obter dos secrets do Streamlit primeiro (produção)
     try:
         if hasattr(st, 'secrets'):
+            print("✅ Streamlit secrets disponível")  # Print direto para debug
             logger.info("✅ Streamlit secrets disponível")
+            
             if 'OPENROUTER_API_KEY' in st.secrets:
                 api_key = st.secrets['OPENROUTER_API_KEY']
-                logger.info(f"✅ API key encontrada nos secrets (length: {len(api_key)})")
+                key_length = len(api_key) if api_key else 0
+                print(f"✅ API key encontrada nos secrets (length: {key_length})")  # Print direto para debug
+                logger.info(f"✅ API key encontrada nos secrets (length: {key_length})")
                 return api_key
             else:
+                print("❌ OPENROUTER_API_KEY não encontrada nos secrets")  # Print direto para debug
                 logger.warning("❌ OPENROUTER_API_KEY não encontrada nos secrets")
                 # Listar as chaves disponíveis
                 available_keys = list(st.secrets.keys()) if hasattr(st.secrets, 'keys') else []
+                print(f"Chaves disponíveis nos secrets: {available_keys}")  # Print direto para debug
                 logger.warning(f"Chaves disponíveis nos secrets: {available_keys}")
         else:
             logger.warning("❌ st.secrets não está disponível")

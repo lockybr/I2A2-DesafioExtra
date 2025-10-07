@@ -26,18 +26,18 @@ class AlternativeSettings:
         """Retorna configurações de fallback com API keys dos secrets."""
         return [
             {
-                # Opção 1: xAI Grok 4 Fast (2M contexto, gratuito) - TESTANDO PRIMEIRO
-                "name": "xAI Grok 4 Fast",
+                # Opção 1: DeepSeek (mais estável)
+                "name": "DeepSeek",
                 "config": {
-                    "model_name": "x-ai/grok-4-fast:free",
+                    "model_name": "deepseek/deepseek-chat-v3.1:free",
                     "base_url": "https://openrouter.ai/api/v1",
                     "api_key": get_api_key("OPENROUTER_API_KEY"),
                     "temperature": 0.1,
                     "max_tokens": 2000
                 },
-                "rate_limit": 100,  # estimado por dia
+                "rate_limit": 50,  # por dia
                 "is_free": True,
-                "context_length": "2M tokens"
+                "context_length": "256k tokens"
             },
             {
                 # Opção 2: Meta Llama 3.2 3B via OpenRouter (gratuito)
